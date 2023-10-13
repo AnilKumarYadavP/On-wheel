@@ -66,7 +66,23 @@ a{
 					<td>${product.getStock()}</td>
 					<td>${product.getDescription()}</td>
 					<td><a href="/customer/cart-remove/${product.getId()}" style="text-decoration: none;">-</a></td>
-					<td>0</td>
+					<td>
+						<c:if test="${cartItems==null}">
+						0
+						</c:if>
+						<c:if test="${cartItems!=null}">
+						<c:set var="flag" value="true"></c:set>
+						<c:forEach var="food" items="${cartItems}">
+						<c:if test="${food.getName().equals(item.getName())}">
+						${food.getQuantity()}
+						<c:set var="flag" value="false"></c:set>
+						</c:if>
+						</c:forEach>
+						<c:if test="${flag==true}">
+						0
+						</c:if>
+						</c:if>
+					</td>
 					<td><a href="/customer/cart-add/${product.getId()}" style="text-decoration: none;">+</a></td>
 					
 					
@@ -75,7 +91,7 @@ a{
 		</tbody>
 	</table>
 	<br />
-	<a href="/customer/view-cart"> <button>ViewCart</button></a>
+	<a href="/customer/viewcart"> <button>ViewCart</button></a>
 	<a href="/admin/home"><button>Back</button></a>
 	
 

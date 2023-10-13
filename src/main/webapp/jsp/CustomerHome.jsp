@@ -26,7 +26,7 @@
     <center>  <h1 >Welcome to Our Restaurant</h1> </center>
     <hr>
        <a href="/customer/fetch-products"> <button style="margin-left:100px;height: 50px;width: 100px;background-color: blue;border: none">View Menu</button></a>
-         <a href="/customer/view-cart"> <button style="margin-left:40px;height: 50px;width: 100px;background-color: blue;border: none">View Orders</button></a>
+         <a href="/customer/fetch-orders"> <button style="margin-left:40px;height: 50px;width: 100px;background-color: blue;border: none">View Orders</button></a>
     
 </body>
 </html>

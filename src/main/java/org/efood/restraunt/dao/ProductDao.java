@@ -93,6 +93,24 @@ public class ProductDao {
 
 	
 
+	     public Payment fetchDetails(int id) {
+	        return details.findById(id).orElse(null);
+	    }
+
+
+
+		public void savePayment(Payment payment) {
+			details.save(payment);
+			
+		}
+
+
+
+		
+
+
+	
+
 
 
 	

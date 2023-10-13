@@ -1,5 +1,6 @@
 package org.efood.restraunt.service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -9,11 +10,13 @@ import org.efood.restraunt.dao.ProductDao;
 import org.efood.restraunt.dto.AddProduct;
 import org.efood.restraunt.dto.Cart;
 import org.efood.restraunt.dto.Customer;
+import org.efood.restraunt.dto.CustomerOrder;
 import org.efood.restraunt.dto.CustomersFood;
 import org.efood.restraunt.dto.Payment;
 import org.efood.restraunt.helper.AES;
 import org.efood.restraunt.helper.LoginHelper;
 import org.efood.restraunt.helper.SendMailLogic;
+import org.efood.restraunt.repository.PaymentDetails;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -240,5 +243,48 @@ public class CustomerService {
 		       
 		}}
 		return "ViewCart";
-	}}}
+	}}
+
+	public String checkPayment(String razorpay_payment_id, HttpSession session, int id, Customer customer,
+			ModelMap modelMap) {
+		
+		  if (razorpay_payment_id != null) {
+	            Payment payment = productDao.fetchDetails(id);
+	            payment.setPaymentId(razorpay_payment_id);
+	            payment.setStatus("Success");
+	            productDao.savePayment(payment);
+
+	            List<CustomerOrder> orders = customer.getOrders();
+	            if (orders == null)
+	                orders = new ArrayList<CustomerOrder>();
+	            CustomerOrder customerOrder = new CustomerOrder();
+	            customerOrder.setDateTime(LocalDateTime.now());
+	            customerOrder.setPrice(Double.parseDouble(payment.getAmount()) / 100);
+	            customerOrder.setList(customer.getCart().getCustomersFoods());
+
+	            orders.add(customerOrder);
+	            customer.setOrders(orders);
+	            customer.setCart(null);
+	            dao.save(customer);
+	            session.setAttribute("customer", dao.fetchById(customer.getId()));
+	            modelMap.put("pos", "Order Placed Success");
+	            return "CustomerHome";
+	        } else {
+	            modelMap.put("neg", "Payment Not Done");
+	            return "CustomerHome";
+	        }
+	}
+
+	public String fetchOrders(ModelMap modelMap, HttpSession session, Customer customer) {
+		 List<CustomerOrder> orders = customer.getOrders();
+	        if (orders == null || orders.isEmpty()) {
+	            modelMap.put("neg", "No Orders Found");
+	            return "CustomerHome";
+	        } else {
+	            modelMap.put("orders", orders);
+	            return "CustomerOrders";
+	        }
+	    }
+	}
+	
 	
